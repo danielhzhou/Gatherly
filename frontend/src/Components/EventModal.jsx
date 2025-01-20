@@ -3,38 +3,32 @@ import React, { useState, useEffect } from "react";
 import Datetime from "react-datetime";
 import moment from "moment";
 import "react-datetime/css/react-datetime.css";
-import "../styles/components/AddEventModal.css";
+import "../styles/components/EventModal.css";
 import RepeatOptions from "./RepeatOptions";
 
-export default function AddEventModal({isOpen, onClose, onEventAdded, initialStart, initialEnd, initialAllDay}) {
+export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEventDelete }) {
     const [title, setTitle] = useState("");
     const [start, setStart] = useState(new Date());
     const [end, setEnd] = useState(new Date());
     const [allDay, setAllDay] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const [repeatOption, setRepeatOption] = useState("none");
 
     useEffect(() => {
-        if (isOpen && initialStart && initialEnd) {
-            setStart(moment(initialStart).toDate());
-            setEnd(moment(initialEnd).toDate());
-            setAllDay(initialAllDay || false);
+        if (isOpen && event) {
+            setTitle(event.title);
+            setStart(moment(event.start).toDate());
+            setEnd(moment(event.end).toDate());
+            setAllDay(event.allDay || false);
+            setRepeatOption(event.repeat || "none");
+            setIsEditing(false);
         }
-    }, [isOpen, initialStart, initialEnd, initialAllDay]);
-
-    const handleAllDayChange = (checked) => {
-        setAllDay(checked);
-        if (checked) {
-            // For all-day events, set start to beginning of day and end to end of day
-            setStart(moment(start).startOf('day').toDate());
-            setEnd(moment(end).endOf('day').toDate());
-        }
-    };
+    }, [isOpen, event]);
 
     const handleStartChange = (date) => {
         const newStart = moment(date);
         setStart(allDay ? newStart.startOf('day').toDate() : newStart.toDate());
         
-        // If end is before new start, adjust it
         if (moment(end).isBefore(newStart)) {
             setEnd(allDay ? newStart.endOf('day').toDate() : newStart.add(1, 'hour').toDate());
         }
@@ -45,56 +39,65 @@ export default function AddEventModal({isOpen, onClose, onEventAdded, initialSta
         setEnd(allDay ? newEnd.endOf('day').toDate() : newEnd.toDate());
     };
 
-    const onSubmit = (event) => {
-        event.preventDefault();
-        
-        // Ensure proper start/end times for all-day events
-        const eventStart = allDay ? moment(start).startOf('day').toDate() : start;
-        const eventEnd = allDay ? moment(end).endOf('day').toDate() : end;
-        
-        onEventAdded({
+    const handleAllDayChange = (checked) => {
+        setAllDay(checked);
+        if (checked) {
+            setStart(moment(start).startOf('day').toDate());
+            setEnd(moment(end).endOf('day').toDate());
+        }
+    };
+
+    const handleSave = (e) => {
+        e.preventDefault();
+        onEventUpdate({
+            ...event,
             title,
-            start: eventStart,
-            end: eventEnd,
+            start,
+            end,
             allDay,
             repeat: repeatOption
         });
-        
-        onClose();
-        // Reset form
-        setTitle("");
-        setStart(new Date());
-        setEnd(new Date());
-        setAllDay(false);
-        setRepeatOption("none");
-    }
+        setIsEditing(false);
+    };
+
+    const handleDelete = () => {
+        if (window.confirm('Are you sure you want to delete this event?')) {
+            onEventDelete(event);
+        }
+    };
 
     return (
-        <Modal 
-            isOpen={isOpen} 
+        <Modal
+            isOpen={isOpen}
             onRequestClose={onClose}
-            contentLabel="Add Event Modal"
+            contentLabel="Event Modal"
             ariaHideApp={false}
             className="event-modal"
         >
-            <form onSubmit={onSubmit} className="event-form">
+            <form onSubmit={handleSave} className="event-form">
+                <div className="modal-header">
+                    <h2>{isEditing ? "Edit Event" : "Event Details"}</h2>
+                    <button type="button" className="close-button" onClick={onClose}>&times;</button>
+                </div>
+
                 <div className="form-group">
                     <label htmlFor="event-title">Event Title</label>
-                    <input 
+                    <input
                         id="event-title"
-                        placeholder="Enter event title" 
-                        value={title} 
+                        value={title}
                         onChange={e => setTitle(e.target.value)}
+                        disabled={!isEditing}
                         required
                     />
                 </div>
 
                 <div className="form-group">
                     <label className="checkbox-label">
-                        <input 
+                        <input
                             type="checkbox"
                             checked={allDay}
                             onChange={e => handleAllDayChange(e.target.checked)}
+                            disabled={!isEditing}
                         />
                         All Day Event
                     </label>
@@ -102,12 +105,13 @@ export default function AddEventModal({isOpen, onClose, onEventAdded, initialSta
 
                 <div className="form-group">
                     <label>Start {allDay ? 'Date' : 'Date & Time'}</label>
-                    <Datetime 
-                        value={start} 
+                    <Datetime
+                        value={start}
                         onChange={handleStartChange}
                         timeFormat={!allDay}
                         dateFormat="MMMM D, YYYY"
                         inputProps={{
+                            disabled: !isEditing,
                             placeholder: `Select start ${allDay ? 'date' : 'date and time'}`
                         }}
                     />
@@ -115,12 +119,13 @@ export default function AddEventModal({isOpen, onClose, onEventAdded, initialSta
 
                 <div className="form-group">
                     <label>End {allDay ? 'Date' : 'Date & Time'}</label>
-                    <Datetime 
-                        value={end} 
+                    <Datetime
+                        value={end}
                         onChange={handleEndChange}
                         timeFormat={!allDay}
                         dateFormat="MMMM D, YYYY"
                         inputProps={{
+                            disabled: !isEditing,
                             placeholder: `Select end ${allDay ? 'date' : 'date and time'}`
                         }}
                     />
@@ -131,18 +136,32 @@ export default function AddEventModal({isOpen, onClose, onEventAdded, initialSta
                     <RepeatOptions
                         value={repeatOption}
                         onChange={setRepeatOption}
+                        disabled={!isEditing}
                     />
                 </div>
 
                 <div className="form-actions">
-                    <button type="button" className="cancel-button" onClick={onClose}>
-                        Cancel
-                    </button>
-                    <button type="submit" className="submit-button">
-                        Add Event
-                    </button>
+                    {!isEditing ? (
+                        <>
+                            <button type="button" className="edit-button" onClick={() => setIsEditing(true)}>
+                                Edit
+                            </button>
+                            <button type="button" className="delete-button" onClick={handleDelete}>
+                                Delete
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>
+                                Cancel
+                            </button>
+                            <button type="submit" className="save-button">
+                                Save
+                            </button>
+                        </>
+                    )}
                 </div>
             </form>
         </Modal>
     );
-}
+} 

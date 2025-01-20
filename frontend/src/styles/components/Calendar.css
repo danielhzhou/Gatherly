@@ -12,13 +12,6 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-.add-event-button {
-  margin-bottom: 1rem;
-  background-color: var(--primary-dark);
-  color: white;
-  font-weight: 600;
-}
-
 /* FullCalendar Customization */
 .fc {
   --fc-border-color: var(--border-dark);
@@ -32,6 +25,30 @@
   --fc-event-border-color: var(--primary-dark);
   --fc-today-bg-color: rgba(100, 108, 255, 0.08);
   --fc-now-indicator-color: var(--primary-dark);
+  color: var(--text-dark);
+}
+
+/* Fix for the white corner box */
+.fc .fc-timegrid-axis {
+  background-color: var(--background-dark) !important;
+  color: var(--text-dark);
+}
+
+.fc .fc-timegrid-axis-frame {
+  background-color: var(--background-dark) !important;
+}
+
+.fc .fc-timegrid-axis-cushion {
+  background-color: var(--background-dark) !important;
+  color: var(--text-dark);
+}
+
+.fc .fc-timegrid-slot-label {
+  background-color: var(--background-dark) !important;
+}
+
+.fc .fc-timegrid-slot-label-cushion {
+  background-color: var(--background-dark) !important;
   color: var(--text-dark);
 }
 
@@ -123,10 +140,6 @@
     background: var(--background-light);
   }
 
-  .add-event-button {
-    background-color: var(--primary-light);
-  }
-
   .fc {
     --fc-border-color: var(--border-light);
     --fc-button-bg-color: var(--secondary-light);
@@ -141,6 +154,30 @@
     color: var(--text-light);
   }
 
+  /* Light mode fix for the white corner box */
+  .fc .fc-timegrid-axis {
+    background-color: var(--background-light) !important;
+    color: var(--text-light);
+  }
+
+  .fc .fc-timegrid-axis-frame {
+    background-color: var(--background-light) !important;
+  }
+
+  .fc .fc-timegrid-axis-cushion {
+    background-color: var(--background-light) !important;
+    color: var(--text-light);
+  }
+
+  .fc .fc-timegrid-slot-label {
+    background-color: var(--background-light) !important;
+  }
+
+  .fc .fc-timegrid-slot-label-cushion {
+    background-color: var(--background-light) !important;
+    color: var(--text-light);
+  }
+
   .fc .fc-col-header-cell {
     background-color: var(--secondary-light);
   }
@@ -152,4 +189,39 @@
   .fc .fc-timegrid-axis {
     color: var(--text-light);
   }
+}
+
+.calendar-header {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0 1rem;
+}
+
+.add-event-button {
+    background-color: var(--fc-button-bg-color);
+    color: var(--text-dark);
+    border: 1px solid var(--fc-button-border-color);
+    padding: 0.5em 0.8em;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9em;
+    transition: all 0.2s;
+}
+
+.add-event-button:hover {
+    background-color: var(--fc-button-hover-bg-color);
+    border-color: var(--fc-button-hover-border-color);
+}
+
+.add-event-button:active {
+    background-color: var(--fc-button-active-bg-color);
+    border-color: var(--fc-button-active-border-color);
+}
+
+@media (prefers-color-scheme: light) {
+    .add-event-button {
+        color: var(--text-light);
+    }
 } 

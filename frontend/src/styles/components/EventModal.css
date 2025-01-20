@@ -1,0 +1,237 @@
+.event-modal {
+    position: relative;
+    background: var(--background-dark);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    outline: none;
+    z-index: 1000;
+    margin: auto;
+    transform: none;
+}
+
+.ReactModal__Overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.event-form {
+    width: 100%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-dark);
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-dark);
+    padding: 0.5rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-button:hover {
+    color: var(--primary-dark);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group select,
+.form-group .rdt input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-dark);
+    border-radius: 4px;
+    background: var(--background-dark);
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.form-group input[type="text"]:disabled,
+.form-group select:disabled,
+.form-group .rdt input:disabled {
+    background: var(--secondary-dark);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-dark);
+}
+
+.form-actions button {
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.edit-button {
+    background-color: var(--primary-dark);
+    color: white;
+    border: none;
+}
+
+.edit-button:hover {
+    background-color: var(--primary-dark-hover);
+}
+
+.delete-button {
+    background-color: #dc2626;
+    color: white;
+    border: none;
+}
+
+.delete-button:hover {
+    background-color: #b91c1c;
+}
+
+.cancel-button {
+    background-color: var(--secondary-dark);
+    color: var(--text-dark);
+    border: 1px solid var(--border-dark);
+}
+
+.cancel-button:hover {
+    background-color: var(--secondary-dark-hover);
+}
+
+.save-button {
+    background-color: var(--primary-dark);
+    color: white;
+    border: none;
+}
+
+.save-button:hover {
+    background-color: var(--primary-dark-hover);
+}
+
+/* Datetime picker customization */
+.rdt {
+    width: 100%;
+}
+
+.rdtPicker {
+    background: var(--background-dark) !important;
+    color: var(--text-dark) !important;
+    border: 1px solid var(--border-dark) !important;
+    border-radius: 4px;
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.rdtPicker td.rdtActive,
+.rdtPicker td.rdtActive:hover {
+    background-color: var(--primary-dark) !important;
+}
+
+.rdtPicker td.rdtToday:before {
+    border-bottom-color: var(--primary-dark) !important;
+}
+
+/* Light mode styles */
+@media (prefers-color-scheme: light) {
+    .event-modal {
+        background: var(--background-light);
+    }
+
+    .modal-header {
+        border-bottom-color: var(--border-light);
+    }
+
+    .modal-header h2,
+    .close-button,
+    .form-group label {
+        color: var(--text-light);
+    }
+
+    .form-group input[type="text"],
+    .form-group select,
+    .form-group .rdt input {
+        background: var(--background-light);
+        color: var(--text-light);
+        border-color: var(--border-light);
+    }
+
+    .form-group input[type="text"]:disabled,
+    .form-group select:disabled,
+    .form-group .rdt input:disabled {
+        background: var(--secondary-light);
+    }
+
+    .form-actions {
+        border-top-color: var(--border-light);
+    }
+
+    .cancel-button {
+        background-color: var(--secondary-light);
+        color: var(--text-light);
+        border-color: var(--border-light);
+    }
+
+    .rdtPicker {
+        background: var(--background-light) !important;
+        color: var(--text-light) !important;
+        border-color: var(--border-light) !important;
+    }
+} 

@@ -7,12 +7,15 @@ import AddEventModal from "./AddEventModal";
 import axios from "axios";
 import moment from "moment";
 import "../styles/components/Calendar.css";
+import EventModal from "./EventModal";
 
 // Configure axios base URL
 axios.defaults.baseURL = 'http://localhost:8000';
 
 export default function Calendar() {
     const [modalOpen, setModalOpen] = useState(false);
+    const [eventModalOpen, setEventModalOpen] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
     const [events, setEvents] = useState([]);
     const calendarRef = useRef(null);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
@@ -27,10 +30,12 @@ export default function Calendar() {
             });
             
             const formattedEvents = response.data.map(event => ({
-                ...event,
-                start: moment(event.start).toDate(),
-                end: moment(event.end).toDate(),
-                allDay: event.allDay || false
+                id: event._id,
+                title: event.title,
+                start: event.start,
+                end: event.end,
+                allDay: event.allDay || false,
+                repeat: event.repeat || 'none'
             }));
             
             setEvents(formattedEvents);
@@ -45,7 +50,8 @@ export default function Calendar() {
                 title: event.title,
                 start: moment(event.start).format(),
                 end: moment(event.end).format(),
-                allDay: event.allDay || false
+                allDay: event.allDay || false,
+                repeat: event.repeat || 'none'
             };
             
             await handleEventAdd({ event: calendarEvent });
@@ -64,17 +70,6 @@ export default function Calendar() {
             start: selectInfo.start,
             end: selectInfo.end,
             allDay: selectInfo.allDay
-        });
-        setModalOpen(true);
-    };
-
-    const handleAddEventClick = () => {
-        const now = new Date();
-        const oneHourLater = new Date(now.getTime() + (60 * 60 * 1000));
-        setSelectedTimeSlot({
-            start: now,
-            end: oneHourLater,
-            allDay: false
         });
         setModalOpen(true);
     };
@@ -107,11 +102,63 @@ export default function Calendar() {
         }
     };
 
+    const handleEventClick = (clickInfo) => {
+        setSelectedEvent(clickInfo.event);
+        setEventModalOpen(true);
+    };
+
+    const handleEventUpdate = async (updatedEvent) => {
+        try {
+            await axios.put(`/api/calendar/update-event/${updatedEvent.id}`, {
+                title: updatedEvent.title,
+                start: moment(updatedEvent.start).format(),
+                end: moment(updatedEvent.end).format(),
+                allDay: updatedEvent.allDay,
+                repeat: updatedEvent.repeat
+            });
+            
+            // Refresh events
+            const calendarApi = calendarRef.current.getApi();
+            await fetchEvents(calendarApi.view.activeStart, calendarApi.view.activeEnd);
+            setEventModalOpen(false);
+        } catch (error) {
+            console.error("Error updating event:", error);
+            alert("Failed to update event. Please try again.");
+        }
+    };
+
+    const handleEventDelete = async (eventToDelete) => {
+        try {
+            await axios.delete(`/api/calendar/delete-event/${eventToDelete.id}`);
+            
+            // Refresh events
+            const calendarApi = calendarRef.current.getApi();
+            await fetchEvents(calendarApi.view.activeStart, calendarApi.view.activeEnd);
+            setEventModalOpen(false);
+        } catch (error) {
+            console.error("Error deleting event:", error);
+            alert("Failed to delete event. Please try again.");
+        }
+    };
+
     return (
         <section className="calendar-section">
-            <button className="add-event-button" onClick={handleAddEventClick}>
-                Add Event
-            </button>
+            <div className="calendar-header">
+                <button 
+                    className="add-event-button" 
+                    onClick={() => {
+                        const now = moment();
+                        setSelectedTimeSlot({
+                            start: now.format(),
+                            end: moment(now).add(1, 'hour').format(),
+                            allDay: false
+                        });
+                        setModalOpen(true);
+                    }}
+                >
+                    Add Event
+                </button>
+            </div>
             <div className="calendar-container">
                 <FullCalendar
                     ref={calendarRef}
@@ -123,8 +170,8 @@ export default function Calendar() {
                         center: 'title',
                         right: 'dayGridMonth,timeGridWeek,timeGridDay'
                     }}
-                    slotMinTime="06:00:00"
-                    slotMaxTime="22:00:00"
+                    slotMinTime="00:00:00"
+                    slotMaxTime="24:00:00"
                     nowIndicator={true}
                     height="auto"
                     datesSet={handleDatesSet}
@@ -136,6 +183,7 @@ export default function Calendar() {
                     selectMirror={true}
                     dayMaxEvents={true}
                     unselectAuto={false}
+                    eventClick={handleEventClick}
                 />
             </div>
             <AddEventModal 
@@ -145,6 +193,13 @@ export default function Calendar() {
                 initialStart={selectedTimeSlot?.start}
                 initialEnd={selectedTimeSlot?.end}
                 initialAllDay={selectedTimeSlot?.allDay}
+            />
+            <EventModal
+                isOpen={eventModalOpen}
+                onClose={() => setEventModalOpen(false)}
+                event={selectedEvent}
+                onEventUpdate={handleEventUpdate}
+                onEventDelete={handleEventDelete}
             />
         </section>
     );
