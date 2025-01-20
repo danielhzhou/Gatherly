@@ -16,8 +16,17 @@ router.post("/create-event", async (req, res) => {
 router.get("/get-events", async (req, res) => {
     try {
         const events = await Event.find({
-            start: { $gte: moment(req.query.start).toDate() },
-            end: { $lte: moment(req.query.end).toDate() }
+            $or: [
+                // Events that start within the range
+                { start: { $gte: moment(req.query.start).toDate(), $lte: moment(req.query.end).toDate() } },
+                // Events that end within the range
+                { end: { $gte: moment(req.query.start).toDate(), $lte: moment(req.query.end).toDate() } },
+                // Events that span across the entire range
+                { 
+                    start: { $lte: moment(req.query.start).toDate() },
+                    end: { $gte: moment(req.query.end).toDate() }
+                }
+            ]
         });
         res.json(events);
     } catch (error) {

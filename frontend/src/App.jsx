@@ -1,21 +1,18 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-import Modal from 'react-modal';
+import React from 'react';
 import Calendar from './Components/Calendar';
-
-Modal.setAppElement('#root');
-
-
+import './App.css';
 
 function App() {
   return (
-    <div>
-      <Calendar />
+    <div className="app-container">
+      <header className="app-header">
+        <h1 className="app-title">Event Calendar</h1>
+      </header>
+      <main>
+        <Calendar />
+      </main>
     </div>
   );
 }
 
-export default App
+export default App;

@@ -1,8 +1,26 @@
-#root {
+.app-container {
+  width: 100%;
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+.app-header {
+  margin-bottom: 2rem;
   text-align: center;
+}
+
+.app-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-bottom: 1rem;
+}
+
+@media (prefers-color-scheme: light) {
+  .app-title {
+    color: var(--primary-light);
+  }
 }
 
 .logo {

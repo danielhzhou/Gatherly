@@ -1,0 +1,131 @@
+.ReactModal__Overlay {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ReactModal__Content {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin: 1.25rem;
+  padding: 2rem !important;
+  max-width: 500px;
+  width: 100%;
+  background: var(--background-dark) !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--border-dark) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.event-form input {
+  margin-bottom: 0.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* DateTime Picker Customization */
+.rdtPicker {
+  background-color: var(--background-dark) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: 6px;
+  color: var(--text-dark) !important;
+}
+
+.rdtPicker th {
+  border-bottom: 1px solid var(--border-dark) !important;
+}
+
+.rdtPicker td.rdtDay:hover,
+.rdtPicker td.rdtHour:hover,
+.rdtPicker td.rdtMinute:hover,
+.rdtPicker td.rdtSecond:hover,
+.rdtPicker .rdtTimeToggle:hover {
+  background: var(--primary-dark) !important;
+  color: white !important;
+}
+
+.rdtPicker td.rdtActive,
+.rdtPicker td.rdtActive:hover {
+  background-color: var(--primary-dark) !important;
+  color: white !important;
+}
+
+.submit-button {
+  margin-top: 1rem;
+  width: 100%;
+  background-color: var(--primary-dark);
+  color: white;
+  font-weight: 600;
+}
+
+/* Light mode overrides */
+@media (prefers-color-scheme: light) {
+  .ReactModal__Content {
+    background: var(--background-light) !important;
+    border: 1px solid var(--border-light) !important;
+  }
+
+  .form-group label {
+    color: var(--text-light);
+  }
+
+  .rdtPicker {
+    background-color: var(--background-light) !important;
+    border: 1px solid var(--border-light) !important;
+    color: var(--text-light) !important;
+  }
+
+  .rdtPicker th {
+    border-bottom: 1px solid var(--border-light) !important;
+  }
+
+  .rdtPicker td.rdtDay:hover,
+  .rdtPicker td.rdtHour:hover,
+  .rdtPicker td.rdtMinute:hover,
+  .rdtPicker td.rdtSecond:hover,
+  .rdtPicker .rdtTimeToggle:hover {
+    background: var(--primary-light) !important;
+  }
+
+  .rdtPicker td.rdtActive,
+  .rdtPicker td.rdtActive:hover {
+    background-color: var(--primary-light) !important;
+  }
+
+  .submit-button {
+    background-color: var(--primary-light);
+  }
+} 
