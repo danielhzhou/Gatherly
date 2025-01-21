@@ -1,0 +1,260 @@
+.availability-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.availability-section,
+.overlap-section {
+    background: var(--background-dark);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.availability-section h2,
+.overlap-section h2 {
+    margin: 0 0 1rem;
+    color: var(--text-dark);
+}
+
+.availability-section p,
+.overlap-section p {
+    margin: 0 0 2rem;
+    color: var(--text-dark);
+    opacity: 0.8;
+}
+
+.day-container {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.day-title {
+    margin: 0 0 1rem;
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.time-range {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    background: var(--background-dark);
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-dark);
+}
+
+.time-range input[type="time"] {
+    padding: 0.5rem;
+    border: 1px solid var(--border-dark);
+    border-radius: 4px;
+    background: var(--background-dark);
+    color: var(--text-dark);
+    min-width: 120px;
+    font-size: 0.95rem;
+}
+
+.time-range span {
+    color: var(--text-dark);
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.remove-time {
+    background: none;
+    border: none;
+    color: #dc2626;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    margin-left: auto;
+}
+
+.remove-time:hover {
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.remove-time[title*="Can't remove"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.add-time {
+    background: none;
+    border: 1px dashed var(--border-dark);
+    color: var(--primary-dark);
+    padding: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.add-time:hover {
+    background: var(--primary-dark);
+    color: white;
+    border-style: solid;
+}
+
+.save-availability {
+    background: var(--primary-dark);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    width: 100%;
+    margin-top: 1rem;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.save-availability:hover:not(:disabled) {
+    background: var(--primary-dark-hover);
+}
+
+.save-availability.saving {
+    background: var(--primary-dark-hover);
+    cursor: wait;
+    opacity: 0.8;
+}
+
+.overlap-ranges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.overlap-range {
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    transition: all 0.2s ease;
+}
+
+.overlap-range:hover {
+    transform: translateX(4px);
+}
+
+.overlap-range .time {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.overlap-range .percentage {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+}
+
+.no-overlap {
+    color: var(--text-dark);
+    opacity: 0.7;
+    font-style: italic;
+    margin: 0;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    color: var(--text-dark);
+}
+
+/* Light mode styles */
+@media (prefers-color-scheme: light) {
+    .availability-section,
+    .overlap-section {
+        background: var(--background-light);
+    }
+
+    .day-container {
+        background: rgba(0, 0, 0, 0.03);
+    }
+
+    .availability-section h2,
+    .overlap-section h2,
+    .day-title {
+        color: var(--text-light);
+    }
+
+    .availability-section p,
+    .overlap-section p,
+    .time-range span {
+        color: var(--text-light);
+    }
+
+    .time-range {
+        background: var(--background-light);
+        border-color: var(--border-light);
+    }
+
+    .time-range input[type="time"] {
+        border-color: var(--border-light);
+        background: var(--background-light);
+        color: var(--text-light);
+    }
+
+    .add-time {
+        border-color: var(--border-light);
+    }
+
+    .no-overlap {
+        color: var(--text-light);
+        background: rgba(0, 0, 0, 0.03);
+    }
+
+    .loading {
+        color: var(--text-light);
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .availability-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+
+    .availability-section,
+    .overlap-section {
+        padding: 1rem;
+    }
+
+    .time-range {
+        flex-wrap: wrap;
+    }
+
+    .time-range input[type="time"] {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .remove-time {
+        margin-left: 0;
+    }
+} 

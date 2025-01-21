@@ -5,6 +5,7 @@ const cors = require("cors");
 const { clerkClient, clerkMiddleware } = require('@clerk/express');
 const { requireAuth, syncUserData } = require('./middleware/auth');
 const calendarRoutes = require('./Controllers/CalendarController');
+const availabilityRoutes = require("./Controllers/AvailabilityController");
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use(syncUserData);
 
 // Routes
 app.use("/api/calendar", calendarRoutes);
+app.use("/api/availability", availabilityRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
