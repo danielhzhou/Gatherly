@@ -1,26 +1,69 @@
 require("dotenv").config();
-
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const cors = require("cors");
+const { clerkClient, clerkMiddleware } = require('@clerk/express');
+const { requireAuth, syncUserData } = require('./middleware/auth');
+const calendarRoutes = require('./Controllers/CalendarController');
 
 const app = express();
 
-app.use(cors());
-app.use(bodyParser.json());
+// Basic middleware
+app.use(express.json());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+        'Content-Type', 
+        'Authorization', 
+        'X-Organization-Id',
+        'Clerk-Session-Id',
+        'Clerk-Organization-Id'
+    ],
+    credentials: true
+}));
 
-mongoose.connect(process.env.MONGO_URL)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch(err => console.error("MongoDB connection error:", err));
-
-// Add logging middleware to see all incoming requests
+// Add detailed request logging middleware
 app.use((req, res, next) => {
-    console.log(`${req.method} ${req.path}`);
+    console.log({
+        timestamp: new Date().toISOString(),
+        method: req.method,
+        path: req.path,
+        headers: {
+            authorization: req.headers.authorization ? 'Bearer [hidden]' : undefined,
+            'x-organization-id': req.headers['x-organization-id'],
+            'content-type': req.headers['content-type']
+        },
+        body: req.method === 'POST' || req.method === 'PUT' ? req.body : undefined
+    });
     next();
 });
 
-app.use("/api/calendar", require("./Controllers/CalendarController"));
+// Clerk authentication middleware chain
+app.use(clerkMiddleware());
+app.use(requireAuth);
+app.use(syncUserData);
+
+// Routes
+app.use("/api/calendar", calendarRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error("Global error handler:", {
+        error: err.message,
+        stack: err.stack,
+        path: req.path,
+        method: req.method
+    });
+    res.status(500).json({ 
+        error: 'Something went wrong!',
+        details: err.message
+    });
+});
+
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log("Connected to MongoDB"))
+    .catch(err => console.error("MongoDB connection error:", err));
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

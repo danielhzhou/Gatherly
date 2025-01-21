@@ -192,36 +192,67 @@
 }
 
 .calendar-header {
-    margin-bottom: 1rem;
     display: flex;
-    justify-content: flex-start;
-    padding: 0 1rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
 }
 
 .add-event-button {
-    background-color: var(--fc-button-bg-color);
-    color: var(--text-dark);
-    border: 1px solid var(--fc-button-border-color);
-    padding: 0.5em 0.8em;
-    border-radius: 3px;
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-dark);
+    color: white;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
-    font-weight: 500;
-    font-size: 0.9em;
-    transition: all 0.2s;
+    font-size: 1rem;
 }
 
 .add-event-button:hover {
-    background-color: var(--fc-button-hover-bg-color);
-    border-color: var(--fc-button-hover-border-color);
+    background-color: var(--primary-hover-dark);
 }
 
-.add-event-button:active {
-    background-color: var(--fc-button-active-bg-color);
-    border-color: var(--fc-button-active-border-color);
+.user-controls {
+    display: flex;
+    align-items: center;
 }
 
 @media (prefers-color-scheme: light) {
     .add-event-button {
+        color: var(--text-light);
+    }
+}
+
+.no-organization-message {
+    text-align: center;
+    padding: 2rem;
+    background: var(--secondary-dark);
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.no-organization-message h2 {
+    color: var(--primary-dark);
+    margin-bottom: 1rem;
+}
+
+.no-organization-message p {
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+@media (prefers-color-scheme: light) {
+    .no-organization-message {
+        background: var(--secondary-light);
+    }
+    
+    .no-organization-message h2 {
+        color: var(--primary-light);
+    }
+    
+    .no-organization-message p {
         color: var(--text-light);
     }
 } 

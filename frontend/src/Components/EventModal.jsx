@@ -5,12 +5,11 @@ import moment from "moment";
 import "react-datetime/css/react-datetime.css";
 import "../styles/components/EventModal.css";
 
-export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEventDelete }) {
+export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEventDelete, canEdit }) {
     const [title, setTitle] = useState("");
     const [start, setStart] = useState(new Date());
     const [end, setEnd] = useState(new Date());
     const [allDay, setAllDay] = useState(false);
-    const [isEditing, setIsEditing] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -19,11 +18,12 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
             setStart(moment(event.start).toDate());
             setEnd(moment(event.end).toDate());
             setAllDay(event.allDay || false);
-            setIsEditing(true);
         }
     }, [isOpen, event]);
 
     const handleStartChange = (date) => {
+        if (!canEdit) return;
+        
         const newStart = moment(date);
         setStart(allDay ? newStart.startOf('day').toDate() : newStart.toDate());
         
@@ -37,6 +37,8 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
     };
 
     const handleEndChange = (date) => {
+        if (!canEdit) return;
+        
         const newEnd = moment(date);
         const proposedEnd = allDay ? newEnd.endOf('day').toDate() : newEnd.toDate();
         
@@ -50,6 +52,8 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
     };
 
     const handleAllDayChange = (checked) => {
+        if (!canEdit) return;
+        
         setAllDay(checked);
         if (checked) {
             setStart(moment(start).startOf('day').toDate());
@@ -59,6 +63,8 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
 
     const handleSave = (e) => {
         e.preventDefault();
+        
+        if (!canEdit) return;
         
         if (moment(end).isSameOrBefore(start)) {
             setError("End time must be after start time");
@@ -72,10 +78,11 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
             end,
             allDay
         });
-        setIsEditing(false);
     };
 
     const handleDelete = () => {
+        if (!canEdit) return;
+        
         if (window.confirm('Are you sure you want to delete this event?')) {
             onEventDelete(event);
         }
@@ -91,7 +98,7 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
         >
             <form onSubmit={handleSave} className="event-form">
                 <div className="modal-header">
-                    <h2>Edit Event</h2>
+                    <h2>{canEdit ? 'Edit Event' : 'View Event'}</h2>
                     <button type="button" className="close-button" onClick={onClose}>&times;</button>
                 </div>
 
@@ -100,11 +107,18 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
                     <input
                         id="event-title"
                         value={title}
-                        onChange={e => setTitle(e.target.value)}
-                        disabled={!isEditing}
+                        onChange={e => canEdit && setTitle(e.target.value)}
+                        disabled={!canEdit}
                         required
                     />
                 </div>
+
+                {event?.creatorEmail && (
+                    <div className="form-group creator-info">
+                        <label>Created by</label>
+                        <div className="creator-email">{event.creatorEmail}</div>
+                    </div>
+                )}
 
                 <div className="form-group">
                     <label className="checkbox-label">
@@ -112,7 +126,7 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
                             type="checkbox"
                             checked={allDay}
                             onChange={e => handleAllDayChange(e.target.checked)}
-                            disabled={!isEditing}
+                            disabled={!canEdit}
                         />
                         All Day Event
                     </label>
@@ -126,7 +140,7 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
                         timeFormat={!allDay}
                         dateFormat="MMMM D, YYYY"
                         inputProps={{
-                            disabled: !isEditing,
+                            disabled: !canEdit,
                             placeholder: `Select start ${allDay ? 'date' : 'date and time'}`
                         }}
                     />
@@ -140,20 +154,25 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
                         timeFormat={!allDay}
                         dateFormat="MMMM D, YYYY"
                         inputProps={{
-                            disabled: !isEditing,
+                            disabled: !canEdit,
                             placeholder: `Select end ${allDay ? 'date' : 'date and time'}`
                         }}
                     />
-                    {error && <div className="error-message">{error}</div>}
                 </div>
 
+                {error && <div className="error-message">{error}</div>}
+
                 <div className="form-actions">
-                    <button type="button" className="delete-button" onClick={handleDelete}>
-                        Delete
-                    </button>
-                    <button type="submit" className="save-button">
-                        Save
-                    </button>
+                    {canEdit && (
+                        <>
+                            <button type="button" className="delete-button" onClick={handleDelete}>
+                                Delete
+                            </button>
+                            <button type="submit" className="save-button">
+                                Save
+                            </button>
+                        </>
+                    )}
                 </div>
             </form>
         </Modal>

@@ -3,23 +3,158 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-header {
   margin-bottom: 2rem;
-  text-align: center;
+  background-color: var(--background-dark);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
 .app-title {
   font-size: 2rem;
   font-weight: 600;
   color: var(--primary-dark);
+  margin: 0;
+}
+
+.header-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Clerk Authentication Styles */
+.cl-card {
+  max-width: 400px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.cl-internal-b3fm6y {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+}
+
+/* Organization Switcher Custom Styles */
+.cl-organizationSwitcher {
+  width: 100%;
+  max-width: 300px;
+}
+
+.cl-organizationSwitcherTrigger {
+  width: 100%;
+  background-color: var(--secondary-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--text-dark);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cl-organizationSwitcherTrigger:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+/* Welcome Message Styles */
+.no-organization-message {
+  text-align: center;
+  padding: 2rem;
+  background: var(--secondary-dark);
+  border-radius: 8px;
+  margin: 2rem 0;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.no-organization-message h2 {
+  color: var(--primary-dark);
   margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.no-organization-message p {
+  color: var(--text-dark);
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+}
+
+@media (min-width: 768px) {
+  .header-content {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .header-controls {
+    width: auto;
+  }
 }
 
 @media (prefers-color-scheme: light) {
+  .app-header {
+    background-color: var(--background-light);
+  }
+
   .app-title {
     color: var(--primary-light);
+  }
+
+  .cl-organizationSwitcherTrigger {
+    background-color: var(--secondary-light);
+    border-color: var(--border-light);
+    color: var(--text-light);
+  }
+
+  .cl-organizationSwitcherTrigger:hover {
+    background-color: var(--primary-light);
+  }
+
+  .no-organization-message {
+    background: var(--secondary-light);
+  }
+
+  .no-organization-message h2 {
+    color: var(--primary-light);
+  }
+
+  .no-organization-message p {
+    color: var(--text-light);
   }
 }
 

@@ -240,4 +240,38 @@
     color: #dc2626;
     font-size: 0.875rem;
     margin-top: 0.25rem;
+}
+
+.creator-info {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: var(--secondary-dark);
+    border-radius: 4px;
+}
+
+.creator-info label {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    opacity: 0.8;
+    margin-bottom: 0.25rem;
+}
+
+.creator-email {
+    font-size: 1rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+@media (prefers-color-scheme: light) {
+    .creator-info {
+        background-color: var(--secondary-light);
+    }
+
+    .creator-info label {
+        color: var(--text-light);
+    }
+
+    .creator-email {
+        color: var(--text-light);
+    }
 } 
