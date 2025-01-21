@@ -10,12 +10,12 @@
     X-Content-Type-Options = "nosniff"
 
 [[headers]]
-  for = "/*.js"
+  for = "/assets/*.js"
   [headers.values]
     Content-Type = "text/javascript; charset=utf-8"
 
 [[headers]]
-  for = "/*.css"
+  for = "/assets/*.css"
   [headers.values]
     Content-Type = "text/css; charset=utf-8"
 
