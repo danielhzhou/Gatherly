@@ -14,6 +14,12 @@ mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("MongoDB connection error:", err));
 
+// Add logging middleware to see all incoming requests
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`);
+    next();
+});
+
 app.use("/api/calendar", require("./Controllers/CalendarController"));
 
 const PORT = process.env.PORT || 8000;

@@ -4,14 +4,12 @@ import Datetime from "react-datetime";
 import moment from "moment";
 import "react-datetime/css/react-datetime.css";
 import "../styles/components/AddEventModal.css";
-import RepeatOptions from "./RepeatOptions";
 
 export default function AddEventModal({isOpen, onClose, onEventAdded, initialStart, initialEnd, initialAllDay}) {
     const [title, setTitle] = useState("");
     const [start, setStart] = useState(new Date());
     const [end, setEnd] = useState(new Date());
     const [allDay, setAllDay] = useState(false);
-    const [repeatOption, setRepeatOption] = useState("none");
 
     useEffect(() => {
         if (isOpen && initialStart && initialEnd) {
@@ -56,8 +54,7 @@ export default function AddEventModal({isOpen, onClose, onEventAdded, initialSta
             title,
             start: eventStart,
             end: eventEnd,
-            allDay,
-            repeat: repeatOption
+            allDay
         });
         
         onClose();
@@ -66,7 +63,6 @@ export default function AddEventModal({isOpen, onClose, onEventAdded, initialSta
         setStart(new Date());
         setEnd(new Date());
         setAllDay(false);
-        setRepeatOption("none");
     }
 
     return (
@@ -123,14 +119,6 @@ export default function AddEventModal({isOpen, onClose, onEventAdded, initialSta
                         inputProps={{
                             placeholder: `Select end ${allDay ? 'date' : 'date and time'}`
                         }}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label>Repeat</label>
-                    <RepeatOptions
-                        value={repeatOption}
-                        onChange={setRepeatOption}
                     />
                 </div>
 

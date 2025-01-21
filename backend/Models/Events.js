@@ -7,11 +7,6 @@ const EventSchema = new mongoose.Schema({
     allDay: {
         type: Boolean,
         default: false
-    },
-    repeat: {
-        type: String,
-        enum: ['none', 'daily', 'weekly', 'monthly', 'yearly'],
-        default: 'none'
     }
 });
 

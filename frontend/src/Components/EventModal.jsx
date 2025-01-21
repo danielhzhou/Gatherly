@@ -4,15 +4,14 @@ import Datetime from "react-datetime";
 import moment from "moment";
 import "react-datetime/css/react-datetime.css";
 import "../styles/components/EventModal.css";
-import RepeatOptions from "./RepeatOptions";
 
 export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEventDelete }) {
     const [title, setTitle] = useState("");
     const [start, setStart] = useState(new Date());
     const [end, setEnd] = useState(new Date());
     const [allDay, setAllDay] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const [repeatOption, setRepeatOption] = useState("none");
+    const [isEditing, setIsEditing] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         if (isOpen && event) {
@@ -20,8 +19,7 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
             setStart(moment(event.start).toDate());
             setEnd(moment(event.end).toDate());
             setAllDay(event.allDay || false);
-            setRepeatOption(event.repeat || "none");
-            setIsEditing(false);
+            setIsEditing(true);
         }
     }, [isOpen, event]);
 
@@ -30,13 +28,25 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
         setStart(allDay ? newStart.startOf('day').toDate() : newStart.toDate());
         
         if (moment(end).isBefore(newStart)) {
-            setEnd(allDay ? newStart.endOf('day').toDate() : newStart.add(1, 'hour').toDate());
+            const newEnd = allDay 
+                ? newStart.clone().endOf('day').toDate()
+                : newStart.clone().add(1, 'hour').toDate();
+            setEnd(newEnd);
         }
+        setError("");
     };
 
     const handleEndChange = (date) => {
         const newEnd = moment(date);
-        setEnd(allDay ? newEnd.endOf('day').toDate() : newEnd.toDate());
+        const proposedEnd = allDay ? newEnd.endOf('day').toDate() : newEnd.toDate();
+        
+        if (moment(proposedEnd).isSameOrBefore(start)) {
+            setError("End time must be after start time");
+            return;
+        }
+        
+        setEnd(proposedEnd);
+        setError("");
     };
 
     const handleAllDayChange = (checked) => {
@@ -49,13 +59,18 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
 
     const handleSave = (e) => {
         e.preventDefault();
+        
+        if (moment(end).isSameOrBefore(start)) {
+            setError("End time must be after start time");
+            return;
+        }
+
         onEventUpdate({
-            ...event,
+            _id: event._id,
             title,
             start,
             end,
-            allDay,
-            repeat: repeatOption
+            allDay
         });
         setIsEditing(false);
     };
@@ -76,7 +91,7 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
         >
             <form onSubmit={handleSave} className="event-form">
                 <div className="modal-header">
-                    <h2>{isEditing ? "Edit Event" : "Event Details"}</h2>
+                    <h2>Edit Event</h2>
                     <button type="button" className="close-button" onClick={onClose}>&times;</button>
                 </div>
 
@@ -129,37 +144,16 @@ export default function EventModal({ isOpen, onClose, event, onEventUpdate, onEv
                             placeholder: `Select end ${allDay ? 'date' : 'date and time'}`
                         }}
                     />
-                </div>
-
-                <div className="form-group">
-                    <label>Repeat</label>
-                    <RepeatOptions
-                        value={repeatOption}
-                        onChange={setRepeatOption}
-                        disabled={!isEditing}
-                    />
+                    {error && <div className="error-message">{error}</div>}
                 </div>
 
                 <div className="form-actions">
-                    {!isEditing ? (
-                        <>
-                            <button type="button" className="edit-button" onClick={() => setIsEditing(true)}>
-                                Edit
-                            </button>
-                            <button type="button" className="delete-button" onClick={handleDelete}>
-                                Delete
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>
-                                Cancel
-                            </button>
-                            <button type="submit" className="save-button">
-                                Save
-                            </button>
-                        </>
-                    )}
+                    <button type="button" className="delete-button" onClick={handleDelete}>
+                        Delete
+                    </button>
+                    <button type="submit" className="save-button">
+                        Save
+                    </button>
                 </div>
             </form>
         </Modal>

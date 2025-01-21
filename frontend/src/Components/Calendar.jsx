@@ -31,11 +31,11 @@ export default function Calendar() {
             
             const formattedEvents = response.data.map(event => ({
                 id: event._id,
+                _id: event._id,
                 title: event.title,
                 start: event.start,
                 end: event.end,
-                allDay: event.allDay || false,
-                repeat: event.repeat || 'none'
+                allDay: event.allDay || false
             }));
             
             setEvents(formattedEvents);
@@ -50,8 +50,7 @@ export default function Calendar() {
                 title: event.title,
                 start: moment(event.start).format(),
                 end: moment(event.end).format(),
-                allDay: event.allDay || false,
-                repeat: event.repeat || 'none'
+                allDay: event.allDay || false
             };
             
             await handleEventAdd({ event: calendarEvent });
@@ -103,18 +102,37 @@ export default function Calendar() {
     };
 
     const handleEventClick = (clickInfo) => {
-        setSelectedEvent(clickInfo.event);
+        console.log("Raw event object:", clickInfo.event);
+        console.log("Event extendedProps:", clickInfo.event.extendedProps);
+        console.log("Event _id:", clickInfo.event._id);
+        console.log("Event id:", clickInfo.event.id);
+        
+        // Try to get ID from all possible locations
+        const eventId = clickInfo.event.id;
+        
+        console.log("Selected event ID:", eventId);
+        
+        const eventData = {
+            _id: eventId,
+            title: clickInfo.event.title,
+            start: clickInfo.event.start,
+            end: clickInfo.event.end,
+            allDay: clickInfo.event.allDay
+        };
+        
+        console.log("Final eventData being set:", eventData);
+        setSelectedEvent(eventData);
         setEventModalOpen(true);
     };
 
     const handleEventUpdate = async (updatedEvent) => {
         try {
-            await axios.put(`/api/calendar/update-event/${updatedEvent.id}`, {
+            console.log("Updating event with data:", updatedEvent);
+            await axios.put(`/api/calendar/update-event/${updatedEvent._id}`, {
                 title: updatedEvent.title,
                 start: moment(updatedEvent.start).format(),
                 end: moment(updatedEvent.end).format(),
-                allDay: updatedEvent.allDay,
-                repeat: updatedEvent.repeat
+                allDay: updatedEvent.allDay
             });
             
             // Refresh events
@@ -129,11 +147,13 @@ export default function Calendar() {
 
     const handleEventDelete = async (eventToDelete) => {
         try {
-            await axios.delete(`/api/calendar/delete-event/${eventToDelete.id}`);
+            await axios.delete(`/api/calendar/delete-event/${eventToDelete._id}`);
             
-            // Refresh events
+            // Refresh events immediately
             const calendarApi = calendarRef.current.getApi();
             await fetchEvents(calendarApi.view.activeStart, calendarApi.view.activeEnd);
+            
+            // Only close modal after successful refresh
             setEventModalOpen(false);
         } catch (error) {
             console.error("Error deleting event:", error);

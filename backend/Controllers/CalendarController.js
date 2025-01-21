@@ -17,17 +17,15 @@ router.get("/get-events", async (req, res) => {
     try {
         const events = await Event.find({
             $or: [
-                // Events that start within the range
                 { start: { $gte: moment(req.query.start).toDate(), $lte: moment(req.query.end).toDate() } },
-                // Events that end within the range
                 { end: { $gte: moment(req.query.start).toDate(), $lte: moment(req.query.end).toDate() } },
-                // Events that span across the entire range
                 { 
                     start: { $lte: moment(req.query.start).toDate() },
                     end: { $gte: moment(req.query.end).toDate() }
                 }
             ]
         });
+        
         res.json(events);
     } catch (error) {
         console.error("Error fetching events:", error);
@@ -37,7 +35,16 @@ router.get("/get-events", async (req, res) => {
 
 router.put("/update-event/:id", async (req, res) => {
     try {
-        const event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const event = await Event.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        );
+
+        if (!event) {
+            return res.status(404).json({ error: "Event not found" });
+        }
+
         res.json(event);
     } catch (error) {
         console.error("Error updating event:", error);
@@ -53,6 +60,6 @@ router.delete("/delete-event/:id", async (req, res) => {
         console.error("Error deleting event:", error);
         res.status(500).json({ error: "Failed to delete event" });
     }
-})
+});
 
 module.exports = router;
