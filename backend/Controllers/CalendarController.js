@@ -77,6 +77,17 @@ router.post("/create-event", async (req, res) => {
 // Get events for organization
 router.get("/get-events", async (req, res) => {
     try {
+        console.log("Fetching events with params:", {
+            organizationId: req.organizationId,
+            start: req.query.start,
+            end: req.query.end,
+            userId: req.auth?.userId
+        });
+
+        if (!req.query.start || !req.query.end) {
+            return res.status(400).json({ error: "Start and end dates are required" });
+        }
+
         const events = await Event.find({
             organizationId: req.organizationId,
             $or: [
@@ -89,6 +100,8 @@ router.get("/get-events", async (req, res) => {
             ]
         }).select('title start end allDay organizationId userId creatorEmail');
         
+        console.log("Found events:", events.length);
+        
         // Format events to include creator info and editable flag
         const formattedEvents = events.map(event => {
             const isCreator = event.userId === req.auth.userId;
@@ -100,8 +113,17 @@ router.get("/get-events", async (req, res) => {
 
         res.json(formattedEvents);
     } catch (error) {
-        console.error("Error fetching events:", error);
-        res.status(500).json({ error: "Failed to fetch events" });
+        console.error("Error fetching events:", {
+            error: error.message,
+            stack: error.stack,
+            query: req.query,
+            userId: req.auth?.userId,
+            organizationId: req.organizationId
+        });
+        res.status(500).json({ 
+            error: "Failed to fetch events",
+            details: error.message
+        });
     }
 });
 

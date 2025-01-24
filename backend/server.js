@@ -12,22 +12,7 @@ const app = express();
 // Basic middleware
 app.use(express.json());
 app.use(cors({
-    origin: (origin, callback) => {
-        const allowedOrigins = [
-            process.env.FRONTEND_URL,
-            'http://localhost:3000',
-            'https://unrivaled-hotteok-8a7ec4.netlify.app'
-        ];
-        
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-    },
+    origin: true, // Allow all origins temporarily for debugging
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
         'Content-Type', 
@@ -36,15 +21,17 @@ app.use(cors({
         'Clerk-Session-Id',
         'Clerk-Organization-Id'
     ],
-    credentials: true
+    credentials: true,
+    exposedHeaders: ['Access-Control-Allow-Origin']
 }));
 
 // Add detailed request logging middleware
 app.use((req, res, next) => {
-    console.log({
+    console.log("Incoming request:", {
         timestamp: new Date().toISOString(),
         method: req.method,
         path: req.path,
+        origin: req.headers.origin,
         headers: {
             authorization: req.headers.authorization ? 'Bearer [hidden]' : undefined,
             'x-organization-id': req.headers['x-organization-id'],
