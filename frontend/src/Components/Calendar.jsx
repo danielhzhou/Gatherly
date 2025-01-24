@@ -11,7 +11,7 @@ import "../styles/components/Calendar.css";
 import EventModal from "./EventModal";
 
 // Configure axios base URL
-axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 export default function Calendar() {
     const [modalOpen, setModalOpen] = useState(false);

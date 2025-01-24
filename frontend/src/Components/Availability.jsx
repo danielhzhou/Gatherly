@@ -3,6 +3,9 @@ import { useOrganization, useAuth } from "@clerk/clerk-react";
 import axios from 'axios';
 import '../styles/components/Availability.css';
 
+// Configure axios base URL
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 const DEFAULT_AVAILABILITY = {
     start: "00:00",
