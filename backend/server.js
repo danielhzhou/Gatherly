@@ -65,9 +65,42 @@ app.use((err, req, res, next) => {
     });
 });
 
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch(err => console.error("MongoDB connection error:", err));
+// MongoDB connection with better options
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 15000, // Timeout after 15 seconds instead of 30
+    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    family: 4, // Use IPv4, skip trying IPv6
+    maxPoolSize: 10,
+    minPoolSize: 2,
+    maxIdleTimeMS: 30000,
+    retryWrites: true,
+})
+.then(() => {
+    console.log("Connected to MongoDB successfully");
+})
+.catch(err => {
+    console.error("MongoDB connection error:", {
+        error: err.message,
+        stack: err.stack,
+        code: err.code,
+        name: err.name
+    });
+});
+
+// Add MongoDB connection error handlers
+mongoose.connection.on('error', err => {
+    console.error('MongoDB connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+    console.log('MongoDB disconnected. Attempting to reconnect...');
+});
+
+mongoose.connection.on('reconnected', () => {
+    console.log('MongoDB reconnected successfully');
+});
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

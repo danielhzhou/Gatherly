@@ -5,15 +5,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        index: true
     },
     email: {
         type: String,
         required: true,
+        index: true
     },
     organizations: [{
         organizationId: {
             type: String,
             required: true,
+            index: true
         },
         role: {
             type: String,
@@ -26,7 +29,19 @@ const userSchema = new mongoose.Schema({
         }
     }],
 }, {
-    timestamps: true
+    timestamps: true,
+    bufferCommands: false,
+    autoIndex: true
 });
 
-module.exports = mongoose.model('User', userSchema); 
+userSchema.index({ clerkId: 1, 'organizations.organizationId': 1 });
+
+userSchema.set('maxTimeMS', 10000);
+
+const User = mongoose.model('User', userSchema);
+
+User.createIndexes().catch(err => {
+    console.error('Error creating indexes:', err);
+});
+
+module.exports = User; 

@@ -17,8 +17,13 @@ const syncUserData = async (req, res, next) => {
             return res.status(401).json({ error: "Authentication required" });
         }
 
-        // Get user data from Clerk
-        const clerkUser = await clerkClient.users.getUser(req.auth.userId);
+        // Get user data from Clerk with timeout
+        const clerkUser = await Promise.race([
+            clerkClient.users.getUser(req.auth.userId),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Clerk API timeout')), 5000)
+            )
+        ]);
         
         // Get organization from the JWT token
         let organizations = [];
@@ -30,16 +35,25 @@ const syncUserData = async (req, res, next) => {
             });
         }
 
-        // Update or create user in our database
-        const user = await User.findOneAndUpdate(
-            { clerkId: req.auth.userId },
-            {
-                clerkId: req.auth.userId,
-                email: clerkUser.emailAddresses[0].emailAddress,
-                organizations: organizations
-            },
-            { upsert: true, new: true }
-        );
+        // Update or create user in our database with timeout
+        const user = await Promise.race([
+            User.findOneAndUpdate(
+                { clerkId: req.auth.userId },
+                {
+                    clerkId: req.auth.userId,
+                    email: clerkUser.emailAddresses[0].emailAddress,
+                    organizations: organizations
+                },
+                { 
+                    upsert: true, 
+                    new: true,
+                    maxTimeMS: 5000 // Set MongoDB operation timeout
+                }
+            ),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('MongoDB operation timeout')), 5000)
+            )
+        ]);
 
         // Attach user to request object for later use
         req.user = user;
@@ -48,9 +62,23 @@ const syncUserData = async (req, res, next) => {
         console.error("Error syncing user data:", {
             error: error.message,
             stack: error.stack,
-            userId: req.auth?.userId
+            userId: req.auth?.userId,
+            type: error.name,
+            code: error.code
         });
-        return res.status(500).json({ error: "Failed to sync user data" });
+
+        // Handle specific error types
+        if (error.message.includes('timeout')) {
+            return res.status(503).json({ 
+                error: "Service temporarily unavailable", 
+                details: "Database operation timed out. Please try again."
+            });
+        }
+
+        return res.status(500).json({ 
+            error: "Failed to sync user data",
+            details: error.message
+        });
     }
 };
 
