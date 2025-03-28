@@ -1,12 +1,12 @@
 # Gatherly
 
-A full-stack calendar and availability management application that enables users to manage their schedules and availability within organizations.
+A full-stack calendar and availability management application that enables friends to sync their schedules with their friend groups utilizing Clerk's organizations feature
 
 ## Technology Stack
 
 ### Frontend
 - **React + Vite**: Modern React application bundled with Vite
-- **Clerk**: Authentication and user management
+- **Clerk**: Authentication and user management, friend group management
 - **FullCalendar**: Interactive calendar interface
 - **React Router**: Client-side routing
 
@@ -44,6 +44,12 @@ A full-stack calendar and availability management application that enables users
 │   ├── .env                 # Environment variables (not versioned)
 │   └── package.json         # Dependencies and scripts
 ```
+
+## Demos
+
+<img width="1329" alt="Screenshot 2025-03-28 at 1 01 09 AM" src="https://github.com/user-attachments/assets/a1997a04-dfca-41b6-8f68-472aedd0e3cc" />
+
+https://github.com/user-attachments/assets/b09ef3f8-388d-4a93-97ca-c120c3829051
 
 ## Getting Started
 
