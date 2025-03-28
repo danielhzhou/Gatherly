@@ -49,6 +49,8 @@ A full-stack calendar and availability management application that enables frien
 
 <img width="1329" alt="Screenshot 2025-03-28 at 1 01 09 AM" src="https://github.com/user-attachments/assets/a1997a04-dfca-41b6-8f68-472aedd0e3cc" />
 
+<img width="1488" alt="Screenshot 2025-03-28 at 1 08 53 AM" src="https://github.com/user-attachments/assets/e712e97b-9f41-4c61-82a2-d7f118af72d4" />
+
 https://github.com/user-attachments/assets/b09ef3f8-388d-4a93-97ca-c120c3829051
 
 ## Getting Started
