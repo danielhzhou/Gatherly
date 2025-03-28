@@ -20,7 +20,7 @@ A full-stack calendar and availability management application that enables frien
 - **User Authentication**: Secure login/signup via Clerk
 - **Organization Management**: Switch between different organizations
 - **Calendar Management**: Create, view, and manage events
-- **Availability Settings**: Set and manage availability slots
+- **See what your friends are doing**: Different friends will have different colored events
 
 ## Project Structure
 
